@@ -2,6 +2,8 @@ class Journal
 {
     private List<Entry> _entries = new List<Entry>();
     private bool _isModified = false;
+    private static Random _random = new Random();
+
     private List<string> _prompts = new List<string>
     {
         "Who was the most interesting person I interacted with today?",
@@ -9,7 +11,7 @@ class Journal
         "How did I see the hand of the Lord in my life today?",
         "What was the strongest emotion I felt today?",
         "If I had one thing I could do over today, what would it be?",
-        "Did you have any regrets from your actions or are you happy with \"it was all apart of the plan\"?",
+        "Did you have any regrets from your actions or are you happy with \"it was all a part of the plan\"?",
         "What do you think you'll remmeber most about today?",
         "What do you think was the most relatable, or familiar, part of your day?",
         "What did you learn? About yourself or Otherwise.",
@@ -25,8 +27,7 @@ class Journal
         switch (choice)
         {
             case "1":
-                Random random = new Random();
-                prompt = _prompts[random.Next(_prompts.Count)];
+                prompt = _prompts[_random.Next(_prompts.Count)];
                 break;
             case "2":
                 break;
@@ -86,7 +87,16 @@ class Journal
             SaveSaveLocation();
         }
 
-        string fileName = Path.Combine(SaveLocation, "journal.txt");
+        Console.WriteLine("Please Enter the Name of your Journal Entry: ");
+        string title = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(title) || title.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+        {
+            Console.WriteLine("Invalid title. Please enter a valid file name.");
+            return;
+        }
+
+        string fileName = Path.Combine(SaveLocation, title);
 
         using (StreamWriter writer = new StreamWriter(fileName))
         {
@@ -97,7 +107,7 @@ class Journal
         }
         _isModified = false;
         _entries.Clear();
-        Console.WriteLine($"Success: Journal saved to '{fileName}'");
+        Console.WriteLine($"Success: {title} saved to '{fileName}'");
     }
     public void LoadFromFile(string fileName)
     {
@@ -183,21 +193,41 @@ class Journal
                     SaveToFile(SaveLocation);
                     Console.WriteLine("Success: Unsaved Changes have been added to the Current Journal.");
                     break;
+
                 case "2":
-                    Console.Write("Enter filename for unsaved entries: ");
+                    Console.Write("Enter filename in current directory or the full path for unsaved entries: ");
                     string fileName = Console.ReadLine();
-                    if (string.IsNullOrEmpty(fileName))
+
+                    if (string.IsNullOrEmpty(fileName) || fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
                     {
-                        Console.WriteLine("Error: Invalid filename.");
+                        Console.WriteLine("Error: Invalid filename. Please enter a valid filename.");
                         break;
                     }
-                    SaveToFile(fileName);
+
+                    string filePath;
+                    if (Path.IsPathRooted(fileName))
+                    {
+                        filePath = fileName;
+                    }
+
+                    else
+                    {
+                        if (!fileName.EndsWith(".txt"))
+                        {
+                            fileName += ".txt";
+                        }
+                        filePath = Path.Combine(SaveLocation, fileName);
+                    }
+
+                    SaveToFile(filePath);
                     break;
+
                 case "3":
                     _entries.Clear();
                     _isModified = false;
                     Console.WriteLine("Success: Unsaved entires deleted.");
                     break;
+                    
                 default:
                     Console.WriteLine("Invalid Option. Unsaved entries retained.");
                     break;
@@ -207,11 +237,29 @@ class Journal
     private void SaveToFile(string fileName)
     {
         string filePath = Path.Combine(SaveLocation, fileName);
+
+        if (File.Exists(filePath))
+        {
+            string directory = Path.GetDirectoryName(filePath);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+            string extension = Path.GetExtension(filePath);
+            int counter = 1;
+
+            string newFilePath;
+            do
+            {
+                newFilePath = Path.Combine(directory, $"{fileNameWithoutExtension} ({counter}){extension}");
+                counter++;
+            } while (File.Exists(newFilePath));
+
+            filePath = newFilePath; 
+        }
+
         using (StreamWriter writer = new StreamWriter(filePath))
         {
             foreach (Entry entry in _entries)
             {
-                writer.WriteLine($"{entry.Date.ToShortDateString()}|{entry.Prompt}|{entry.Response}");
+                writer.WriteLine($"{entry.Date.ToShortDateString()}|{entry.Prompt}|{entry.Response}\n");
             }
         }
         _isModified = false;

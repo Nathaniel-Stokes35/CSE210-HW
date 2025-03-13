@@ -2,6 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+/// My exceeding the requirements portion stems from the design and implementation of the code. 
+// - I have implemented the ability to save to multiple files and change the save location multiple times within a single session while persisting the location across program instances. 
+// - Unsaved entries are checked upon loading, and the user is prompted on how to handle them.
+// - I've added the option for the user to choose whether they’d like a writing prompt when adding an entry, and the program begins with the WriteEntry method to encourage engagement.
+// - I’ve added five additional prompts to create more diverse and meaningful entries.
+// - The program supports both relative and absolute paths, giving users flexibility over where and how journal files are saved.
+// - A title prompt for journal entries ensures that entries are not static and allows for more personalized organization.
+// - Finally, I’ve added a check to prevent overwriting files by appending a counter `(n)` to the filename if the file already exists, ensuring each file has a unique name.
+
 class Program
 {
     static void Main(string[] args)
