@@ -98,11 +98,14 @@ class Journal
 
         string fileName = Path.Combine(SaveLocation, title);
 
-        using (StreamWriter writer = new StreamWriter(fileName))
+        using (StreamWriter writer = new StreamWriter(fileName, append: true))
         {
             foreach (Entry entry in _entries)
             {
-                writer.WriteLine($"{entry.Date.ToShortDateString()}|{entry.Prompt}|{entry.Response}");
+                if (!File.ReadAllLines(fileName).Any(line => line.Contains($"{entry.Date.ToShortDateString()}|{entry.Prompt}|{entry.Response}")))
+                {
+                    writer.WriteLine($"{entry.Date.ToShortDateString()}|{entry.Prompt}|{entry.Response}");
+                }
             }
         }
         _isModified = false;
@@ -243,25 +246,50 @@ class Journal
             string directory = Path.GetDirectoryName(filePath);
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
             string extension = Path.GetExtension(filePath);
-            int counter = 1;
-
-            string newFilePath;
-            do
+            
+            Console.WriteLine("Duplicate Name Found.\n1. Create Unique Name (i.e. {filename}(1).txt)\n2. Append Entries");
+            string choice = Console.ReadLine();
+            switch (choice)
             {
-                newFilePath = Path.Combine(directory, $"{fileNameWithoutExtension} ({counter}){extension}");
-                counter++;
-            } while (File.Exists(newFilePath));
+                case "1":
+                    string newFilePath;
+                    int counter = 1;
 
-            filePath = newFilePath; 
-        }
+                    do
+                    {
+                        newFilePath = Path.Combine(directory, $"{fileNameWithoutExtension} ({counter}){extension}");
+                        counter++;
+                    } while (File.Exists(newFilePath));
 
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            foreach (Entry entry in _entries)
-            {
-                writer.WriteLine($"{entry.Date.ToShortDateString()}|{entry.Prompt}|{entry.Response}\n");
+                    filePath = newFilePath;
+                    break;
+                    
+                case "2":
+                    using (StreamWriter writer = new StreamWriter(filePath, append: true))
+                    {
+                        foreach (Entry entry in _entries)
+                        {
+                            writer.WriteLine($"{entry.Date.ToShortDateString()}|{entry.Prompt}|{entry.Response}\n");
+                        }
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid Choice - Creating Unique FileName...");
+                    counter = 1;
+
+                    do
+                    {
+                        newFilePath = Path.Combine(directory, $"{fileNameWithoutExtension} ({counter}){extension}");
+                        counter++;
+                    } while (File.Exists(newFilePath));
+
+                    filePath = newFilePath;
+                    break;
             }
+ 
         }
+
         _isModified = false;
         Console.WriteLine($"Success: Unsaved Entries saved to '{filePath}'");
     } 
