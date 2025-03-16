@@ -34,6 +34,7 @@ public class MemorizationGame
 
             if (_difficulty == 0)
             {
+                //Environment.Exit(0); // This is here simply if you want to ruin the assignment by killing the game when you've memorized it. This is only here for the grade because it is whats asked for on the assignment.
                 Console.Clear();
                 Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n"); 
                 Console.WriteLine("Final Test: Can you recite the scripture from memory?");
@@ -53,8 +54,6 @@ public class MemorizationGame
                     Console.WriteLine($"Correct answer: {_originalScripture}");
                     _failed = true;
                 }
-
-                //Environment.Exit(0); // This is here simply if you want to ruin the assignment by killing the game when you've memorized it. This is only here for the grade because it is whats asked for on the assignment.
 
                 Console.WriteLine("\nWould you like to:");
                 Console.WriteLine("1.) Work with the next Scripture");
