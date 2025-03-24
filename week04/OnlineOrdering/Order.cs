@@ -125,6 +125,8 @@ public class Order
             Console.WriteLine("Product not found.");
             return;
         }
+        int index = this._products.FindIndex(p => p.Equals(product));
+        this._products[index].Restock(product.GetQuantity());
 
         this._products.Remove(product);
         this._total -= product.Cost(product.GetQuantity(), product.GetPrice());
