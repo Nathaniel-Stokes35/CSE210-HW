@@ -1,84 +1,84 @@
 public class Video
 {
-    public string Title;
-    public string Description;
-    public int Length;
-    public int Likes;
-    public int Dislikes;
-    public List<Comment> Comments;
-    public DateTime UploadDate;
-    public string Uploader;
+    public string _title;
+    public string _description;
+    public int _length;
+    public int _likes;
+    public int _dislikes;
+    public List<Comment> _comments;
+    public DateTime _uploadDate;
+    public string _uploader;
 
     public Video(string title, string description, int length, string uploader)
     {
-        Title = title;
-        Description = description;
-        Length = length;
-        Likes = 0;
-        Dislikes = 0;
-        Comments = new List<Comment>();
-        UploadDate = DateTime.Now;
-        Uploader = uploader;
+        _title = title;
+        _description = description;
+        _length = length;
+        _likes = 0;
+        _dislikes = 0;
+        _comments = new List<Comment>();
+        _uploadDate = DateTime.Now;
+        _uploader = uploader;
     }
     public string GetTitle()
     {
-        return Title;
+        return _title;
     }
     public string GetDescription()
     {
-        return Description;
+        return _description;
     }
     public int GetLength()
     {
-        return Length;
+        return _length;
     }
     public int GetLikes()
     {
-        return Likes;
+        return _likes;
     }
     public int GetDislikes()
     {
-        return Dislikes;
+        return _dislikes;
     }
     public List<Comment> GetComments()
     {
-        return Comments;
+        return _comments;
     }
     public DateTime GetUploadDate()
     {
-        return UploadDate;
+        return _uploadDate;
     }
     public string GetUploader()
     {
-        return Uploader;
+        return _uploader;
     }
     public void SetTitle(string title)
     {
-        Title = title;
+        _title = title;
     }
     public void SetDescription(string description)
     {
-        Description = description;
+        _description = description;
     }
     public void Like()
     {
-        Likes++;
+        _likes++;
     }
     public void Dislike()
     {
-        Dislikes++;
+        _dislikes++;
     }
     public void AddComment(string user, string text)
     {
-        Comments.Add(new Comment(user, text));
+        _comments.Add(new Comment(user, text));
     }
     public void AddComment(Comment comment)
     {
-        Comments.Add(comment);
+        _comments.Add(comment);
     }
     public void AddReply(string commenter, string user, string text)
     {
-        Comments.Add(new Comment(commenter, user, text));
+        _comments.Add(new Comment(commenter, user, text));
         Comment comment = GetComment(user);
         if (comment != null)
         {
@@ -87,11 +87,11 @@ public class Video
     }
     public void RemoveComment(string userName)
     {
-        Comments.RemoveAll(comment => comment.GetUserName() == userName);
+        _comments.RemoveAll(comment => comment.GetUserName() == userName);
     }
     public void EditComment(string userName, string newText)
     {
-        foreach (var comment in Comments)
+        foreach (var comment in _comments)
         {
             if (comment.GetUserName() == userName)
             {
@@ -102,7 +102,7 @@ public class Video
     }
     public Comment GetComment(string user)
     {
-        foreach (Comment comment in Comments)
+        foreach (Comment comment in _comments)
         {
             if (comment.GetUserName() == user)
             {
@@ -114,21 +114,21 @@ public class Video
     }
     public int CommentCount()
     {
-        return Comments.Count;
+        return _comments.Count;
     }
     public void PrintVideoInfo()
     {
-        Console.WriteLine($"Title: {Title}");
-        Console.WriteLine($"Description: {Description}");
-        Console.WriteLine($"Likes: {Likes}");
-        Console.WriteLine($"Dislikes: {Dislikes}");
-        Console.WriteLine($"Upload Date: {UploadDate}");
-        Console.WriteLine($"Uploader: {Uploader}");
-        Console.WriteLine($"Length: {Length}s {(Length < 60 ? $"" : $"({Math.Round((double)Length / 60)}min {Length % 60}sec)")}");
+        Console.WriteLine($"Title: {_title}");
+        Console.WriteLine($"Description: {_description}");
+        Console.WriteLine($"Likes: {_likes}");
+        Console.WriteLine($"Dislikes: {_dislikes}");
+        Console.WriteLine($"Upload Date: {_uploadDate}");
+        Console.WriteLine($"Uploader: {_uploader}");
+        Console.WriteLine($"Length: {_length}s {(_length < 60 ? $"" : $"({Math.Round((double)_length / 60)}min {_length % 60}sec)")}");
         Console.WriteLine($"{CommentCount()} Comments:");
-        foreach (Comment comment in Comments)
+        foreach (Comment comment in _comments)
         {
-            if (comment.Reply)
+            if (comment._reply)
             {
                 continue;
             }
@@ -143,7 +143,7 @@ public class Video
     public void PrintComments()
     {
         Console.WriteLine("Comments:");
-        foreach (var comment in Comments)
+        foreach (var comment in _comments)
         {
             Console.WriteLine(comment);
             comment.PrintReplies();

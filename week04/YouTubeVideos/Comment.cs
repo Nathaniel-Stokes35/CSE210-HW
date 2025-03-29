@@ -1,64 +1,60 @@
 public class Comment
 {
-    public string User;
-    public string Text;
-    public List<Comment> Replies;
-    public DateTime Date;
-    public Boolean Reply;
+    public string _user;
+    public string _text;
+    public List<Comment> _replies;
+    public DateTime _date;
+    public Boolean _reply;
 
     public Comment(string user, string text)
     {
-        User = user;
-        Text = text;
-        Replies = new List<Comment>();
-        Date = DateTime.Now;
+        _user = user;
+        _text = text;
+        _replies = new List<Comment>();
+        _date = DateTime.Now;
     }
 
     public Comment(string user, string commenter, string text)
     {
-        Reply = true;
-        User = user;
-        Text = text;
-        Replies = new List<Comment>();
-        Date = DateTime.Now;
-    }
-    public Boolean IsReply()
-    {
-        return Reply;
+        _reply = true;
+        _user = user;
+        _text = text;
+        _replies = new List<Comment>();
+        _date = DateTime.Now;
     }
     public string GetUserName()
     {
-        return User;
+        return _user;
     }
     public string GetText()
     {
-        return Text;
+        return _text;
     }
     public DateTime GetDate()
     {
-        return Date;
+        return _date;
     }
     public void EditComment(string text)
     {
-        Text = text;
-        Date = DateTime.Now;
+        _text = text;
+        _date = DateTime.Now;
     }
     public void AddReply(string user, string text)
     {
-        Replies.Add(new Comment(user, text));
+        _replies.Add(new Comment(user, text));
     }
     public List<Comment> GetReplies()
     {
-        return Replies;
+        return _replies;
     }
     public int GetReplyNum()
     {
-        return Replies.Count;
+        return _replies.Count;
     }
     public void PrintReplies()
     {
         Console.WriteLine($"\tReplies:");    
-        foreach (var comment in Replies)
+        foreach (var comment in _replies)
         {
             Console.Write("\t\t");
             Console.WriteLine(comment);
@@ -66,6 +62,6 @@ public class Comment
     }
     public override string ToString()
     {
-        return $"{User} ({Date}): {Text}";
+        return $"{_user} ({_date}): {_text}";
     }
 }
