@@ -2,76 +2,76 @@ using System.Net.Mail;
 
 public class User
 {
-    private string _UserName;
-    private string _FullName;
-    private string _FirstName;
-    private string _LastName;
-    private DateTime _StartDate;
-    private int _LongestStreak;
-    private string _MostProgressType;
-    private string _DirectoryPath;
-    private int _EarnedPoints;
-    private int _TotalPoints;
-    private List<Goal> _Goals;
+    private string _userName;
+    private string _fullName;
+    private string _firstName;
+    private string _lastName;
+    private DateTime _startDate;
+    private int _longestStreak;
+    private string _mostProgressType;
+    private string _directoryPath;
+    private int _earnedPoints;
+    private int _totalPoints;
+    private List<Goal> _goals;
 
     public User(string username, List<Goal> goals)
     {
-        _UserName = username.ToLower();
-        _DirectoryPath = Path.Combine("Users", _UserName);
-        _Goals = goals;
+        _userName = username.ToLower();
+        _directoryPath = Path.Combine("Users", _userName);
+        _goals = goals;
 
-        if (!Directory.Exists(_DirectoryPath))
+        if (!Directory.Exists(_directoryPath))
         {
             Console.WriteLine("No user profile found. Creating a new one...");
             Console.Write("Enter your first name: ");
-            _FirstName = Console.ReadLine();
+            _firstName = Console.ReadLine();
             Console.Write("Enter your last name: ");
-            _LastName = Console.ReadLine();
+            _lastName = Console.ReadLine();
 
-            _StartDate = DateTime.Now;
-            _LongestStreak = 0;
-            _MostProgressType = "None";
-            _FullName = $"{_FirstName} {_LastName}";
-            _LongestStreak = 0;
-            _MostProgressType = "None";
+            _startDate = DateTime.Now;
+            _longestStreak = 0;
+            _mostProgressType = "None";
+            _fullName = $"{_firstName} {_lastName}";
+            _longestStreak = 0;
+            _mostProgressType = "None";
             
-            Directory.CreateDirectory(_DirectoryPath);
+            Directory.CreateDirectory(_directoryPath);
             SaveUserData();
-            Console.WriteLine($"User profile created for {_UserName}.");
+            Console.WriteLine($"User profile created for {_userName}.");
         }
         else
         {
-            string profilePath = Path.Combine(_DirectoryPath, "profile.txt");
+            string profilePath = Path.Combine(_directoryPath, "profile.txt");
             if (File.Exists(profilePath))
             {
                 string[] lines = File.ReadAllLines(profilePath);
 
-                _UserName = username;  
-                _FullName = lines[1].Split(":")[1].Trim();
-                if (_FullName.Contains(' '))
+                _userName = username;  
+                _fullName = lines[1].Split(":")[1].Trim();
+                if (_fullName.Contains(' '))
                 {
-                    _FirstName = _FullName.Split(' ')[0];
-                    _LastName = _FullName.Split(' ')[1];
+                    _firstName = _fullName.Split(' ')[0];
+                    _lastName = _fullName.Split(' ')[1];
                 }
                 else
                 {
-                    _FirstName = _FullName;
-                    _LastName = "";
+                    _firstName = _fullName;
+                    _lastName = "";
                 }
-                _StartDate = DateTime.Parse(lines[2].Split(":")[1].Trim());
-                _LongestStreak = int.Parse(lines[3].Split(":")[1].Trim());
-                _MostProgressType = lines[4].Split(":")[1].Trim();
+                _startDate = DateTime.Parse(lines[2].Split(":")[1].Trim());
+                _longestStreak = int.Parse(lines[3].Split(":")[1].Trim());
+                _mostProgressType = lines[4].Split(":")[1].Trim();
             }
         }
     }
     public User(){}
     public void SetPoints(int points)
     {
-        _EarnedPoints = points;
+        _earnedPoints = points;
     }
     public void SetTotalPoints(int points)
     {
-        _TotalPoints = points;
+        _totalPoints = points;
     }
     private bool AreNamesSimilar(string saved, string entered)
     {
@@ -103,21 +103,21 @@ public class User
     }
     public void SaveUserData()
     {
-        string path = Path.Combine(_DirectoryPath, "profile.txt");
+        string path = Path.Combine(_directoryPath, "profile.txt");
         using (StreamWriter writer = new StreamWriter(path))
         {
-            writer.WriteLine($"Username: {_UserName}");
-            writer.WriteLine($"Name: {_FirstName} {_LastName}");
-            writer.WriteLine($"StartDate: {_StartDate.ToString("yyyy-MM-dd")}");
-            writer.WriteLine($"LongestStreak: {_LongestStreak}");
-            writer.WriteLine($"MostProgressType: {_MostProgressType}");
-            writer.WriteLine($"Earned Points from Avaliable: {_EarnedPoints}");
-            writer.WriteLine($"Total Points Avaliable: {_TotalPoints}");
+            writer.WriteLine($"Username: {_userName}");
+            writer.WriteLine($"Name: {_firstName} {_lastName}");
+            writer.WriteLine($"StartDate: {_startDate.ToString("yyyy-MM-dd")}");
+            writer.WriteLine($"LongestStreak: {_longestStreak}");
+            writer.WriteLine($"MostProgressType: {_mostProgressType}");
+            writer.WriteLine($"Earned Points from Avaliable: {_earnedPoints}");
+            writer.WriteLine($"Total Points Avaliable: {_totalPoints}");
         }
     }
     public void LoadUserData(string userName)
     {
-        string path = Path.Combine(_DirectoryPath, "profile.txt");
+        string path = Path.Combine(_directoryPath, "profile.txt");
         if (!File.Exists(path))
         {
             Console.WriteLine($"User profile for {userName} does not exist.");
@@ -140,50 +140,50 @@ public class User
 
                 switch (key)
                 {
-                    case "Username": _UserName = value; break;
-                    case "Name": _FullName = value; break;
-                    case "StartDate": _StartDate = DateTime.Parse(value); break;
-                    case "LongestStreak": _LongestStreak = int.Parse(value); break;
-                    case "MostProgressType": _MostProgressType = value; break;
-                    case "Earned Points from Avaliable": _EarnedPoints = int.Parse(value); break;
-                    case "Total Points Avaliable": _TotalPoints = int.Parse(value); break;
+                    case "Username": _userName = value; break;
+                    case "Name": _fullName = value; break;
+                    case "StartDate": _startDate = DateTime.Parse(value); break;
+                    case "LongestStreak": _longestStreak = int.Parse(value); break;
+                    case "MostProgressType": _mostProgressType = value; break;
+                    case "Earned Points from Avaliable": _earnedPoints = int.Parse(value); break;
+                    case "Total Points Avaliable": _totalPoints = int.Parse(value); break;
                     default: Console.WriteLine($"Unknown key: {key}"); break;
                 }
-                _FirstName = _FullName.Split(' ')[0];
-                _LastName = _FullName.Split(' ')[1];
+                _firstName = _fullName.Split(' ')[0];
+                _lastName = _fullName.Split(' ')[1];
             }
         }
-        _DirectoryPath = Path.Combine("Users", _UserName);
+        _directoryPath = Path.Combine("Users", _userName);
     }
     public void AddGoal(Goal goal)
     {
-        _Goals.Add(goal);
+        _goals.Add(goal);
     }
     public void RemoveGoal(Goal goal)
     {
-        _Goals.Remove(goal);
+        _goals.Remove(goal);
     }
     public void DisplayGoals()
     {
-        Console.WriteLine($"Goals for {_UserName}:");
-        foreach (var goal in _Goals)
+        Console.WriteLine($"Goals for {_userName}:");
+        foreach (var goal in _goals)
         {
             Console.WriteLine(goal.ToString());
         }
     }
     public void DisplayUserData()
     {
-        Console.WriteLine($"User: {_UserName}");
-        Console.WriteLine($"Name: {_FullName}");
-        Console.WriteLine($"Longest Streak: {_LongestStreak}");
-        Console.WriteLine($"Most Progress Type: {_MostProgressType}");
-        Console.WriteLine($"Start Date: {_StartDate.ToShortDateString()}");
-        Console.WriteLine($"Goals: {_Goals.Count}");
-        foreach (var goal in _Goals)
+        Console.WriteLine($"User: {_userName}");
+        Console.WriteLine($"Name: {_fullName}");
+        Console.WriteLine($"Longest Streak: {_longestStreak}");
+        Console.WriteLine($"Most Progress Type: {_mostProgressType}");
+        Console.WriteLine($"Start Date: {_startDate.ToShortDateString()}");
+        Console.WriteLine($"Goals: {_goals.Count}");
+        foreach (var goal in _goals)
         {
             Console.WriteLine($"- {goal.GetName()}");
         }
-        Console.WriteLine($"Earned Points: {_EarnedPoints}");
-        Console.WriteLine($"Total Points: {_TotalPoints}");
+        Console.WriteLine($"Earned Points: {_earnedPoints}");
+        Console.WriteLine($"Total Points: {_totalPoints}");
     }
 }

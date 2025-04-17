@@ -6,15 +6,15 @@ public class SimpleGoal : Goal
     { }
     public override int MarkComplete()
     {
-        if (_IsComplete)
+        if (_isComplete)
         {
-            Console.WriteLine($"Goal '{_Name}' is already completed.");
+            Console.WriteLine($"Goal '{_name}' is already completed.");
             return 0;
         }
 
-        Console.WriteLine($"Congratulations on completing the goal '{_Name}'! You earned {_BonusPoints} points.");
-        _IsComplete = true;
-        return _BonusPoints;
+        Console.WriteLine($"Congratulations on completing the goal '{_name}'! You earned {_bonusPoints} points.");
+        _isComplete = true;
+        return _bonusPoints;
     }
     public override int MarkComplete(Activity activity)
     {

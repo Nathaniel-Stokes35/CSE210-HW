@@ -7,16 +7,16 @@ public class ChecklistGoal : Goal
     {
         if (activities == null)
         {
-            _StoredActivites = new List<Activity>();
+            _storedActivites = new List<Activity>();
         }
         else
         {
-            _StoredActivites = activities;
+            _storedActivites = activities;
         }
     }
     public override int MarkComplete(Activity activity)
     {
-        if (!_StoredActivites.Contains(activity))
+        if (!_storedActivites.Contains(activity))
         {
             Console.WriteLine($"Activity '{activity.GetName()}' is not in the checklist.");
             return 0;
@@ -26,21 +26,21 @@ public class ChecklistGoal : Goal
             Console.WriteLine($"Activity '{activity.GetName()}' is already completed.");
             return 0;
         }
-        Console.WriteLine($"Marking activity '{activity.GetName()}' as complete in {_Name} checklist.");
+        Console.WriteLine($"Marking activity '{activity.GetName()}' as complete in {_name} checklist.");
         activity.MarkComplete();
         return activity.GetPoints();
     }
     public void ListActivities()
     {
-        Console.WriteLine($"Activities for checklist '{_Name}':");
-        foreach (var activity in _StoredActivites)
+        Console.WriteLine($"Activities for checklist '{_name}':");
+        foreach (var activity in _storedActivites)
         {
             Console.WriteLine($"- {activity.GetName()}: {(activity.IsActiveComplete() ? "Complete" : "Incomplete")}");
         }
     }
     public override string ToString()
     {
-        return $"Goal Name: {_Name}, Description: {_Description}, Points: {_BonusPoints}, Complete: {_IsComplete}";
+        return $"Goal Name: {_name}, Description: {_description}, Points: {_bonusPoints}, Complete: {_isComplete}";
     }
     public override void Display()
     {
@@ -71,17 +71,17 @@ public class ChecklistGoal : Goal
         try
         {
             string[] lines = File.ReadAllLines(filename);
-            _Name = lines[0].Replace("Name:", "").Trim();
-            _Description = lines[1].Replace("Description:", "").Trim();
-            _BonusPoints = int.Parse(lines[2].Replace("Points:", "").Trim());
-            _IsComplete = bool.Parse(lines[3].Replace("Complete:", "").Trim());
+            _name = lines[0].Replace("Name:", "").Trim();
+            _description = lines[1].Replace("Description:", "").Trim();
+            _bonusPoints = int.Parse(lines[2].Replace("Points:", "").Trim());
+            _isComplete = bool.Parse(lines[3].Replace("Complete:", "").Trim());
 
             string activitiesLine = lines[5].Replace("Activities:", "").Trim();
             if (!string.IsNullOrWhiteSpace(activitiesLine))
             {
                 string[] activityData = activitiesLine.Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-                _StoredActivites.Clear();
+                _storedActivites.Clear();
                 foreach (var activity in activityData)
                 {
                     string[] actParts = activity.Trim().Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -91,11 +91,11 @@ public class ChecklistGoal : Goal
 
                     var act = new Activity(name, points, DateTime.Now);
                     if (complete) act.MarkComplete();
-                    _StoredActivites.Add(act);
+                    _storedActivites.Add(act);
                 }
             }
 
-            Console.WriteLine($"Checklist goal '{_Name}' loaded successfully.");
+            Console.WriteLine($"Checklist goal '{_name}' loaded successfully.");
         }
         catch (Exception ex)
         {

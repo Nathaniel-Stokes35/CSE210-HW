@@ -3,10 +3,10 @@ using System.Formats.Asn1;
 
 public class GoalManager
 {
-    private List<Goal> _Goals = new List<Goal>();
-    private int _EarnedPoints;
-    private string _DirPath;
-    private User _User;
+    private List<Goal> _goals = new List<Goal>();
+    private int _earnedPoints;
+    private string _dirPath;
+    private User _user;
 
     public GoalManager()
     {
@@ -14,13 +14,25 @@ public class GoalManager
         string userName = Console.ReadLine().ToLower();
         Console.WriteLine("");
 
-        _DirPath = Path.Combine("Users", userName);
+        _dirPath = Path.Combine("Users", userName);
+        _user = new User(userName, _goals);
         LoadGoals();
-        _User = new User(userName, _Goals);
+    }
+    public void ChangeUser()
+    {
+        Console.WriteLine("");
+        Console.WriteLine("Write the User Name of who you want to switch too: ");
+        string userName = Console.ReadLine().ToLower();
+        Console.WriteLine("");
+
+        _dirPath = Path.Combine("Users", userName);
+        _goals = new List<Goal>();
+        LoadGoals();
+        _user = new User(userName, _goals);
     }
     public void AddGoal(Goal goal)
     {
-        _Goals.Add(goal);
+        _goals.Add(goal);
         SaveGoals();
         Console.WriteLine($"Goal '{goal.GetName()}' added.");
     }
@@ -35,10 +47,10 @@ public class GoalManager
             Console.WriteLine("Goal name cannot be empty.");
             return;
         }
-        var goal = _Goals.FirstOrDefault(g => g.GetName() == name);
+        var goal = _goals.FirstOrDefault(g => g.GetName() == name);
         if (goal != null)
         {
-            _Goals.Remove(goal);
+            _goals.Remove(goal);
             Console.WriteLine($"Goal '{name}' removed.");
         }
         else
@@ -51,7 +63,7 @@ public class GoalManager
     {
         Console.Write("Enter goal name: ");
         string goalName = Console.ReadLine();
-        var goal = _Goals.FirstOrDefault(g => g.GetName() == goalName);
+        var goal = _goals.FirstOrDefault(g => g.GetName() == goalName);
         if (goal == null)
         {
             Console.WriteLine($"Goal '{goalName}' not found.");
@@ -77,7 +89,7 @@ public class GoalManager
     {
         Console.Write("Enter goal name: ");
         string goalName = Console.ReadLine();
-        var goal = _Goals.FirstOrDefault(g => g.GetName() == goalName);
+        var goal = _goals.FirstOrDefault(g => g.GetName() == goalName);
         if (goal == null)
         {
             Console.WriteLine($"Goal '{goalName}' not found.");
@@ -97,8 +109,8 @@ public class GoalManager
     {
         try
         {
-            string[] goalFiles = Directory.GetFiles(_DirPath, "*_goals.txt");
-            Console.WriteLine($"Loading goals from {_DirPath}...");
+            string[] goalFiles = Directory.GetFiles(_dirPath, "*_goals.txt");
+            Console.WriteLine($"Loading goals from {_dirPath}...");
             Goal goal = null;
 
             foreach (var file in goalFiles)
@@ -124,13 +136,13 @@ public class GoalManager
                             switch (type.ToLower())
                             {
                                 case "checklist":
-                                    goal = new ChecklistGoal(_DirPath, name, description, bonusPoints, null, repeat);
+                                    goal = new ChecklistGoal(_dirPath, name, description, bonusPoints, null, repeat);
                                     break;
                                 case "eternal":
-                                    goal = new EternalGoal(_DirPath, name, description, bonusPoints, null, repeat);
+                                    goal = new EternalGoal(_dirPath, name, description, bonusPoints, null, repeat);
                                     break;
                                 default:
-                                    goal = new SimpleGoal(_DirPath, name, description, bonusPoints, null, repeat);                                
+                                    goal = new SimpleGoal(_dirPath, name, description, bonusPoints, null, repeat);                                
                                     break;
                             }
                         }
@@ -192,38 +204,36 @@ public class GoalManager
                         {
                             if (goal != null)
                             {
-                                _Goals.Add(goal);
+                                _goals.Add(goal);
                                 goal = null;
                             }
                         }
                     }
                 }
             }
-            foreach (var obj in _Goals)
+            foreach (var obj in _goals)
             {
                 int empty = obj.GetTotalPoints();
             }
             Console.WriteLine("");
             Console.WriteLine("All goal files loaded successfully.");
         }
-        catch (Exception ex)
+        finally
         {
-            Console.WriteLine("");
-            Console.WriteLine($"Error loading goals: {ex.Message}");
+            SaveGoals();
         }
-        SaveGoals();
     }
     public void DisplayUserData()
     {
-        _User.DisplayUserData();
+        _user.DisplayUserData();
     }
     public void SaveGoals()
     {
         try
         {
-            using (StreamWriter writer = new StreamWriter(Path.Combine(_DirPath, $"{DateTime.Now:yyyyMMdd}_goals.txt")))
+            using (StreamWriter writer = new StreamWriter(Path.Combine(_dirPath, $"{DateTime.Now:yyyyMMdd}_goals.txt")))
             {
-                foreach (var goal in _Goals)
+                foreach (var goal in _goals)
                 {
                     writer.WriteLine($"Type: {goal.IsType()},");
                     writer.WriteLine($"Name: {goal.GetName()},");
@@ -273,13 +283,13 @@ public class GoalManager
         switch (type.ToLower())
         {
             case "simple":
-                goal = new SimpleGoal(_DirPath, name, description, points, emptyActivities, repeatable);
+                goal = new SimpleGoal(_dirPath, name, description, points, emptyActivities, repeatable);
                 break;
             case "checklist":
-                goal = new ChecklistGoal(_DirPath, name, description, points, emptyActivities, repeatable);
+                goal = new ChecklistGoal(_dirPath, name, description, points, emptyActivities, repeatable);
                 break;
             case "eternal":
-                goal = new EternalGoal(_DirPath, name, description, points, emptyActivities, true);
+                goal = new EternalGoal(_dirPath, name, description, points, emptyActivities, true);
                 break;
             default:
                 Console.WriteLine("Invalid goal type.");
@@ -294,13 +304,13 @@ public class GoalManager
                 break;
             goal.AddActivity();
         }
-        _Goals.Add(goal);
+        _goals.Add(goal);
         SaveGoals();
     }
 
     public void DisplayGoals()
     {
-        foreach (var goal in _Goals)
+        foreach (var goal in _goals)
         {
             goal.Display();
         }
@@ -308,10 +318,10 @@ public class GoalManager
 
     public void EvaluateAll()
     {
-        _EarnedPoints = 0;
+        _earnedPoints = 0;
         int i = 0;
         Console.WriteLine("");
-        foreach (var obj in _Goals)
+        foreach (var obj in _goals)
         {
             List<Activity> activities = obj.GetActivities();
             foreach (var active in activities)
@@ -319,14 +329,14 @@ public class GoalManager
                 if (active.IsActiveComplete())
                 {
                     i++;
-                    _EarnedPoints += active.GetPoints();
+                    _earnedPoints += active.GetPoints();
                 }
             }
             if (i == activities.Count)
             {
                 Console.WriteLine($"All activities in goal '{obj.GetName()}' are complete.");
                 obj.MarkComplete();
-                _EarnedPoints += obj.GetBonusPoints();
+                _earnedPoints += obj.GetBonusPoints();
             }
             else
             {
@@ -334,11 +344,11 @@ public class GoalManager
             }
             i = 0;
         }
-        Console.WriteLine($"Total points earned: {_EarnedPoints} out of {_Goals.Sum(g => g.GetTotalPoints())}");
+        Console.WriteLine($"Total points earned: {_earnedPoints} out of {_goals.Sum(g => g.GetTotalPoints())}");
         Console.WriteLine("");
         SaveGoals();
-        _User.SetPoints(_EarnedPoints);
-        _User.SaveUserData();
+        _user.SetPoints(_earnedPoints);
+        _user.SaveUserData();
     }
     public void MarkComplete()
     {
@@ -346,7 +356,7 @@ public class GoalManager
         string goal = Console.ReadLine();
         Console.WriteLine("");
 
-        var foundGoal = _Goals.FirstOrDefault(g =>
+        var foundGoal = _goals.FirstOrDefault(g =>
             string.Equals(g.GetName(), goal, StringComparison.OrdinalIgnoreCase));
 
         if (foundGoal == null)
@@ -360,7 +370,7 @@ public class GoalManager
         if (activities == null || activities.Count == 0)
         {
             int earned = foundGoal.MarkComplete();
-            _EarnedPoints += earned;
+            _earnedPoints += earned;
             if (foundGoal.IsType() == "Eternal")
             {
                 Console.WriteLine($"Eternal goal {goal} has no activities but is labeled Eternal. Would you like to repeat this goal?");
@@ -400,7 +410,7 @@ public class GoalManager
             return;
         }
 
-        _EarnedPoints += foundGoal.MarkComplete(activity);
+        _earnedPoints += foundGoal.MarkComplete(activity);
         EvaluateAll();
     }
 }

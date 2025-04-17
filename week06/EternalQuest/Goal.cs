@@ -1,35 +1,35 @@
 public abstract class Goal
 {
-    protected List<string> _Types = new List<string> { "Simple", "Eternal", "Checklist" };
-    protected List<Activity> _StoredActivites = new List<Activity>();
-    protected string _Name;
-    protected string _Type;
-    protected string _Description;
-    protected int _BonusPoints;
-    protected int _EarnedPoints;
-    protected int _TotalPoints;
-    protected bool _IsComplete;
-    protected string _FileName;
-    protected string _FilePath;
-    protected bool _Repeatable;
+    protected List<string> _types = new List<string> { "Simple", "Eternal", "Checklist" };
+    protected List<Activity> _storedActivites = new List<Activity>();
+    protected string _name;
+    protected string _type;
+    protected string _description;
+    protected int _bonusPoints;
+    protected int _earnedPoints;
+    protected int _totalPoints;
+    protected bool _isComplete;
+    protected string _fileName;
+    protected string _filePath;
+    protected bool _repeatable;
 
     public Goal(string filepath, string name, string description, string type, int points, List<Activity> activities, bool repeatable = false)
     {
-        _FilePath = filepath;
-        _Repeatable = repeatable;
-        _Name = name;
-        _Description = description;
-        _Type = type;
-        _BonusPoints = points;
-        _FileName = name + "_goal.txt";
-        _IsComplete = false;
+        _filePath = filepath;
+        _repeatable = repeatable;
+        _name = name;
+        _description = description;
+        _type = type;
+        _bonusPoints = points;
+        _fileName = name + "_goal.txt";
+        _isComplete = false;
         if (activities == null)
         {
-            _StoredActivites = new List<Activity>();
+            _storedActivites = new List<Activity>();
         }
         else
         {
-            _StoredActivites = activities;
+            _storedActivites = activities;
         }
     }
     public virtual void Display()
@@ -52,56 +52,56 @@ public abstract class Goal
     }
     public virtual void SetFilename(string filename)
     {
-        _FileName = filename;
+        _fileName = filename;
     }
     public virtual string GetFileName()
     {
-        return _FileName;
+        return _fileName;
     }
     public virtual void SetFilePath(string filepath)
     {
-        _FilePath = filepath + _FileName;
+        _filePath = filepath + _fileName;
     }
     public virtual void SetName(string name)
     {
-        _Name = name;
+        _name = name;
     }
     public virtual void SetDescription(string description)
     {
-        _Description = description;
+        _description = description;
     }
     public virtual void SetRepeatable(bool repeatable)
     {
-        _Repeatable = repeatable;
+        _repeatable = repeatable;
     }
     public virtual string IsType()
     {
-        return _Type;
+        return _type;
     }
     public virtual bool IsRepeatable()
     {
-        return _Repeatable;
+        return _repeatable;
     }
     public virtual void SetBonusPoints(int points)
     {
-        _BonusPoints = points;
+        _bonusPoints = points;
     }
     public virtual int GetBonusPoints()
     {
-        return _BonusPoints;
+        return _bonusPoints;
     }
     public virtual int GetTotalPoints()
     {
-        _TotalPoints = _StoredActivites.Sum(a => a.GetTotalPoints()) + _BonusPoints;
-        return _TotalPoints;
+        _totalPoints = _storedActivites.Sum(a => a.GetTotalPoints()) + _bonusPoints;
+        return _totalPoints;
     }
     public virtual string GetName()
     {
-        return _Name;
+        return _name;
     }
     public virtual string GetDescription()
     {
-        return _Description;
+        return _description;
     }
     public virtual void AddActivity()
     {
@@ -110,80 +110,80 @@ public abstract class Goal
         Console.Write("Enter activity points: ");
         int points = int.Parse(Console.ReadLine());
         var newActivity = new Activity(name, points, DateTime.Now);
-        _StoredActivites.Add(newActivity);
+        _storedActivites.Add(newActivity);
     }
     public virtual void AddActivity(Activity activity)
     {
-        _StoredActivites.Add(activity);
+        _storedActivites.Add(activity);
     }
     public virtual void AddActivities(List<Activity> activities)
     {
         foreach (var activity in activities)
         {
-            _StoredActivites.Add(activity);
+            _storedActivites.Add(activity);
         }
     }
     public virtual void RemoveActivity(Activity activity)
     {
-        if (_StoredActivites.Contains(activity))
+        if (_storedActivites.Contains(activity))
         {
-            _StoredActivites.Remove(activity);
-            Console.WriteLine($"Removed activity: {activity.GetName()} from '{_Name}' checklist.");
+            _storedActivites.Remove(activity);
+            Console.WriteLine($"Removed activity: {activity.GetName()} from '{_name}' checklist.");
         }
         else
         {
-            Console.WriteLine($"Activity: {activity.GetName()} not found in '{_Name}' checklist.");
+            Console.WriteLine($"Activity: {activity.GetName()} not found in '{_name}' checklist.");
         }
     }
     public virtual List<Activity> GetActivities()
     {
-        return _StoredActivites;
+        return _storedActivites;
     }
     public abstract int MarkComplete(Activity activity);
     public virtual int MarkComplete()
     {
-        Console.WriteLine($"Congratulations! '{_Name}' is complete!");
-        _IsComplete = true;
-        _EarnedPoints = CalculateEarnedPoints() + _BonusPoints;
-        return _EarnedPoints;
+        Console.WriteLine($"Congratulations! '{_name}' is complete!");
+        _isComplete = true;
+        _earnedPoints = CalculateEarnedPoints() + _bonusPoints;
+        return _earnedPoints;
     }
     public virtual bool IsGoalComplete()
     {
-        return _IsComplete;
+        return _isComplete;
     }
     public virtual void LoadGoal(string data)
     {}
     public virtual int Evaluate()
     {
         int i = 0;
-        foreach (var activity in _StoredActivites)
+        foreach (var activity in _storedActivites)
         {
             if (activity.IsActiveComplete())
             {
                 i++;
             }
         }
-        if (i == _StoredActivites.Count)
+        if (i == _storedActivites.Count)
         {
             MarkComplete();    
         }
-        Console.WriteLine($"Progress on {_Name}: ");
-        if (_IsComplete)
+        Console.WriteLine($"Progress on {_name}: ");
+        if (_isComplete)
         {
-            Console.WriteLine($"Goal '{_Name}' is complete! You earned {_BonusPoints} points.");
-            return _EarnedPoints + _BonusPoints;
+            Console.WriteLine($"Goal '{_name}' is complete! You earned {_bonusPoints} points.");
+            return _earnedPoints + _bonusPoints;
         }
         else
         {
             ListUnfinished();
-            Console.WriteLine($"Goal '{_Name}' has {_StoredActivites.Count - i} more activities to complete.");
+            Console.WriteLine($"Goal '{_name}' has {_storedActivites.Count - i} more activities to complete.");
         }
-        return _EarnedPoints;
+        return _earnedPoints;
     }
     public virtual void ListUnfinished()
     {
-        Console.WriteLine($"Activities for goal '{_Name}':");
-        foreach (var activity in _StoredActivites)
+        Console.WriteLine($"Activities for goal '{_name}':");
+        foreach (var activity in _storedActivites)
         {
             if (!activity.IsActiveComplete())
             {
@@ -193,6 +193,6 @@ public abstract class Goal
     }
     public virtual int CalculateEarnedPoints()
     {
-        return _StoredActivites.Sum(a => a.IsActiveComplete() ? a.GetPoints() : 0);
+        return _storedActivites.Sum(a => a.IsActiveComplete() ? a.GetPoints() : 0);
     }
 }

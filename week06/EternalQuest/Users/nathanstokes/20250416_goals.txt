@@ -1,0 +1,9 @@
+Type: Checklist,
+Name: Test2,
+Description: New Example,
+Points: 200,
+Activities: 
+Five, Points: 500/500, Complete: True |Three, Points: 0/300, Complete: False |
+Repeatable: True,
+Complete: False
+--------------------------------------------------

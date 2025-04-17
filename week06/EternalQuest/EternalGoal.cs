@@ -5,16 +5,17 @@ public class EternalGoal : Goal
     {
         if (activities == null)
         {
-            _StoredActivites = new List<Activity>();
+            _storedActivites = new List<Activity>();
         }
         else
         {
-            _StoredActivites = activities;
+            _storedActivites = activities;
         }
     }
     public override int MarkComplete()
     {
-        Console.WriteLine("Eternal Goals can never be complete, they are forever. ");
+        Console.WriteLine("");
+        Console.WriteLine("Eternal Goals can never be complete, they can only be forgotten. ");
         return 0;
     }
     public override int MarkComplete(Activity activity)
@@ -24,25 +25,26 @@ public class EternalGoal : Goal
             Console.WriteLine($"Activity '{activity.GetName()}' is already completed.");
             return 0;
         }
-        Console.WriteLine($"Congratulations on finishing {activity.GetName()}! You received {activity.GetPoints()} points.");
+        Console.WriteLine($"Congratulations on finishing {activity.GetName()}! You received {activity.GetTotalPoints()} points.");
         activity.MarkComplete();
         return activity.GetPoints();
     }
     public override string ToString()
     {
-        return $"Eternal Goal: {_Name}, Description: {_Description}, Points: {_BonusPoints}";
-    }    public override void SetRepeatable(bool repeatable)
+        return $"Eternal Goal: {_name}, Description: {_description}, Points: {_bonusPoints}";
+    }    
+    public override void SetRepeatable(bool repeatable)
     {
-        _Repeatable = repeatable;
+        _repeatable = repeatable;
         if (repeatable)
         {
-            Console.WriteLine($"Eternal goal '{_Name}', and activities, will be repeated until forgotten.");
+            Console.WriteLine($"Eternal goal '{_name}', and activities, will be repeated until forgotten.");
         }
         else
         {
-            Console.WriteLine($"Eternal goal '{_Name}', and associated activities, will be forgotten.");
+            Console.WriteLine($"Eternal goal '{_name}', and associated activities, will be forgotten.");
         }
-        foreach (var activity in _StoredActivites)
+        foreach (var activity in _storedActivites)
         {
             activity.SetRepeatable(repeatable);
         }

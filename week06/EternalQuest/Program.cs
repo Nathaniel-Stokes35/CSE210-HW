@@ -13,10 +13,11 @@ class Program
         {
             Console.Clear();
             Console.WriteLine("=== Goal Tracker ===");
+            Console.WriteLine("0. Change User");
             Console.WriteLine("1. Create a New Goal");
             Console.WriteLine("2. Mark Activity Complete");
-            Console.WriteLine("3. Display All Goals");
-            Console.WriteLine("4. Display Progress");
+            Console.WriteLine("3. Display Each Individual Goal Progress");
+            Console.WriteLine("4. Display Overhead Progress");
             Console.WriteLine("5. Remove Goal");
             Console.WriteLine("6. Remove Activity");
             Console.WriteLine("7. Add Activity");
@@ -28,6 +29,10 @@ class Program
 
             switch (input)
             {
+                case "0":
+                    _Manager.ChangeUser();
+                    Pause();
+                    break;
                 case "1":
                     _Manager.CreateGoal();
                     _Manager.SaveGoals();
