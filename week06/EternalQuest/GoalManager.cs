@@ -1,6 +1,10 @@
 using System.ComponentModel.Design;
 using System.Formats.Asn1;
 
+
+// Listen to Me Nathan, this is what you need to do. You need to 
+
+
 public class GoalManager
 {
     private List<Goal> _goals = new List<Goal>();
@@ -93,6 +97,34 @@ public class GoalManager
         if (goal == null)
         {
             Console.WriteLine($"Goal '{goalName}' not found.");
+            return;
+        }
+        if (goal.IsType() == "Checklist")
+        {
+            Console.WriteLine("");
+            Console.Writeline("Is this a Multiple Occassion Activity? (i.e. Going out to the Gym 10 times, etc.) (y/n):")
+            answer = Console.ReadLine();
+            if (answer.ToLower() == "y")
+            {
+                Console.WriteLine("Activity Name: ");
+                string activityName = Console.ReadLine();
+                Console.WriteLine("Activity Points: ");
+                int activityPoints = int.Parse(Console.ReadLine());
+                Console.WriteLine("Number of Occurences before Bonus:");
+                int increments = int.Parse(Console.ReadLine());
+                Console.WriteLine("Bonus Point Amount: ");
+                int bonusPoints = int.Parse(Console.ReadLine());
+
+                activity = new ChecklistActivity(activityName, activityPoints, bonusPoints, DateTime.Now, increments, null);
+                goal.AddActivity(activity);
+            }
+            else
+            {
+                activity = new Activity();
+                goal.AddActivity(activity);
+            }
+            Console.WriteLine($"Activity '{activity.GetName()}' added to goal '{goalName}'.");
+            SaveGoals();
             return;
         }
         Console.Write("Enter name of the new activity: ");

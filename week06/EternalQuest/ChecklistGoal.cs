@@ -4,16 +4,7 @@ public class ChecklistGoal : Goal
 {
     public ChecklistGoal(string filePath, string name, string description, int points, List<Activity> activities, bool isRepeatable = false)
         : base(filePath, name, description, "Checklist", points, activities, isRepeatable)
-    {
-        if (activities == null)
-        {
-            _storedActivites = new List<Activity>();
-        }
-        else
-        {
-            _storedActivites = activities;
-        }
-    }
+    {}
     public override int MarkComplete(Activity activity)
     {
         if (!_storedActivites.Contains(activity))
@@ -37,6 +28,51 @@ public class ChecklistGoal : Goal
         {
             Console.WriteLine($"- {activity.GetName()}: {(activity.IsActiveComplete() ? "Complete" : "Incomplete")}");
         }
+    }
+    public int MarkComplete(CheckListActivity activity)
+    {
+        if (activity.GetCurrentIteration() == activity.GetIterations())
+        {
+            Console.WriteLine("");
+            Console.WriteLine($"Congratulations on completeing {activity.GetName()}!");
+            Console.WriteLine("Would you like to increase the number of iterations? (y/n)");
+            string response = Console.ReadLine();
+            if (response?.ToLower() == "y")
+            {
+                Console.WriteLine("How many should we increase the number by? (i.e. if you say 1 and there are 10 left, it will become 11 left)")
+                int increase = int.Parse(Console.ReadLine());
+                activity.SetIterations(activity.GetIterations() + increase);
+                Console.WriteLine($"Activity '{activity.GetName()}' iterations increased to {activity.GetIterations()}.");
+            }
+            else
+            {
+                activity.MarkComplete();
+            }
+            return;
+        }
+        else
+        {
+            activity.MarkComplete();
+        }
+    }
+    public void AddActivity(ChecklistActivity activity)
+    {
+        if (_storedActivites.Contains(activity))
+        {
+            Console.WriteLine($"Activity '{activity.GetName()}' is already in the checklist.");
+            Console.WriteLine("Would you like to increase the number of iterations until complete? (y/n)");
+            string response = Console.ReadLine();
+            if (response?.ToLower() == "y")
+            {
+                Console.WriteLine("How many should we increase the number by? (i.e. if you say 1 and there are 10 left, it will become 11 left)")
+                int increase = int.Parse(Console.ReadLine());
+                activity.SetIterations(activity.GetIterations() + increase);
+                Console.WriteLine($"Activity '{activity.GetName()}' iterations increased to {activity.GetIterations()}.");
+            }
+            return;
+        }
+        _storedActivites.Add(activity);
+        Console.WriteLine($"Activity '{activity.GetName()}' added to checklist '{_name}'.");
     }
     public override string ToString()
     {

@@ -73,12 +73,6 @@ public class Activity
     {
         return $"{_name},{_totalPoints},{_date},{_repeatable}";
     }
-
-    public static Activity FromCSV(string csv)
-    {
-        var parts = csv.Split(',');
-        return new Activity(parts[0], int.Parse(parts[1]), DateTime.Parse(parts[2]), bool.Parse(parts[3]));
-    }
     public void Evaluate()
     {
         if (_isComplete)
