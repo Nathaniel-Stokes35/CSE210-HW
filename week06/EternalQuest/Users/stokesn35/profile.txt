@@ -1,0 +1,7 @@
+Username: stokesn35
+Name: Nathaniel Stokes
+StartDate: 2025-04-16
+LongestStreak: 0
+MostProgressType: None
+Earned Points from Avaliable: 250
+Total Points Avaliable: 0

@@ -1,0 +1,27 @@
+Type: Simple,
+Name: Test,
+Description: Example,
+Points: 400,
+Activities: 
+One, Points: 100/100, Complete: True |Two, Points: 0/200, Complete: False |Three, Points: 0/300, Complete: False |
+Repeatable: False,
+Complete: False
+--------------------------------------------------
+Type: Checklist,
+Name: Checklist,
+Description: Daily Schedule,
+Points: 500,
+Activities: 
+Brush Teeth, Points: 50/50, Complete: True |Workout, Points: 0/150, Complete: False |Shower, Points: 0/100, Complete: False |Scripture Study, Points: 100/100, Complete: True |
+Repeatable: True,
+Complete: False
+--------------------------------------------------
+Type: Eternal,
+Name: Personal Time,
+Description: Time devoted to me,
+Points: 250,
+Activities: 
+Relax, Points: 0/250, Complete: False |Play Games, Points: 0/250, Complete: False |Read, Points: 0/250, Complete: False |
+Repeatable: True,
+Complete: False
+--------------------------------------------------

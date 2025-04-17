@@ -1,0 +1,18 @@
+Goals:
+a.) General Hygene
+b.) Physical Improvment
+c.) Eating Healthy
+d.) Scripture Study
+e.) Personal Time
+
+Tracks:
+    a.) Consistent Daily Schedules
+        Check Time that an activity was consistent, does it fall into the "grace period" for that activity. (allow a delay to be applied for any reason that pushs the schedules forward to overcome the delay)
+        Points will be awarded based on how closely the time recorded fits to the target time (there will be a schduled "delay" to account for the time it takes to actually record).
+        A user set "restart" period (every week, every month, every day) will reset the amount of "possible points" in the display record (i.e. 50/100 if they didn't hit the goals of two 25 point activities) 
+    b.) Accomplishing physical workouts (regardless of whether it is in a schedule, this could be a way to improve your metric if you missed a few points in the schedule, increasing both possible and overall points to make the gap smaller relative to the total)
+    c.) Eating Healthy will have bonus points (that do not contribute to total possible) simply by eating a more balenced meal with added benefits. (Total calories, macro-nutrients, etc.)
+        Total calories will be calorie base (measured by activity level, weight, height, age, and gender) / number of meals scheduled in the day (recommended will be 5 meals)
+            If you eat less than the recommended amount, but still greater than the BMR to not induce muscle loss and/or extreme fatigue and/or metabolic slowdown, will be rewarded bonus points measured by how close they maintain to the TDEE.
+    d.) Scripture Study will be based on how much time is devoted to scripture study and how much stime was set aside to accomplish that goal.
+    e.) Personal time will be rewarded when the user records that they spent time to relax and step away from their troubles.   
