@@ -2,9 +2,10 @@ public class ChecklistActivity : Activity
 {
     private string _name;
     private DateTime _date;
-    private string _description;
     private int _bonusPoints;
     private int _stdPoints;
+    private int _completePoints;
+    private int _currPoints;
     private int _iterations;
     private int _currentIteration;
     private List<string> _checklistItems;
@@ -23,6 +24,7 @@ public class ChecklistActivity : Activity
         _checklistItems = checklistItems ?? new List<string>();
         _isComplete = false;
         _repeatable = repeatable;
+        _completePoints = bonus + (points * iterations);
     }
     public void SetIterations(int iterations)
     {
@@ -40,18 +42,38 @@ public class ChecklistActivity : Activity
     {
         return _iterations;
     }
-    public void MarkComplete()
+    public int GetBonusPoints()
+    {
+        return _bonusPoints;
+    }
+    public int GetStdPoints()
+    {
+        return _stdPoints;
+    }
+    public int GetCompletePoints()
+    {
+        return _completePoints;
+    }
+    public int GetCurrPoints()
+    {
+        return _currPoints;
+    }
+    public override int MarkComplete()
     {
         _currentIteration++;
         if (_currentIteration >= _iterations)
         {
             _isComplete = true;
+            _currPoints = _bonusPoints + _stdPoints;
+            return _bonusPoints + _stdPoints;
         }
         else
         {
-            Console.WriteLine($"{currentIteration}/{_iterations} times completed.");
+            Console.WriteLine($"{_currentIteration}/{_iterations} times completed.");
             Console.WriteLine("");
             Console.WriteLine($"You have {_iterations - _currentIteration} times left before the bonus! You can do it!");
+            _currPoints += _stdPoints;
+            return _stdPoints;
         }
     }
 }

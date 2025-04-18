@@ -1,0 +1,9 @@
+Type: Checklist,
+Name: Daily Schedule,
+Description: Daily Activities,
+Points: 500,
+Activities: 
+Brush Teeth, Points: 0/150, Complete: False |Workout, Points: 0/150, Complete: False |
+Repeatable: True,
+Complete: False
+--------------------------------------------------

@@ -1,5 +1,6 @@
 using System.ComponentModel.Design;
 using System.Formats.Asn1;
+using System.Runtime.InteropServices;
 
 
 // Listen to Me Nathan, this is what you need to do. You need to 
@@ -14,6 +15,7 @@ public class GoalManager
 
     public GoalManager()
     {
+        Console.Clear();
         Console.WriteLine("Write your User Name to Save Info Under (This will also be the directory name saved under 'Users' in this directory): ");
         string userName = Console.ReadLine().ToLower();
         Console.WriteLine("");
@@ -91,54 +93,121 @@ public class GoalManager
     }
     public void AddActivity()
     {
+        bool repeat = false;
         Console.Write("Enter goal name: ");
         string goalName = Console.ReadLine();
+        Console.WriteLine("");
+        if (string.IsNullOrEmpty(goalName))
+        {
+            Console.WriteLine("Goal name cannot be empty.");
+            return;
+        }
         var goal = _goals.FirstOrDefault(g => g.GetName() == goalName);
         if (goal == null)
         {
             Console.WriteLine($"Goal '{goalName}' not found.");
             return;
         }
+
+        Console.WriteLine("Activity Name: ");
+        string activityName = Console.ReadLine();
+        Console.WriteLine("Activity Points: ");
+        int activityPoints = int.Parse(Console.ReadLine());
+        Console.WriteLine("Is this a Repeatable Activity? (y/n): ");
+        string repeatableInput = Console.ReadLine();
+        char repeatableChar = char.ToLower(repeatableInput.Trim()[0]);
+
+        if (repeatableChar == 'y')
+        {
+            repeat = true;
+        }
+        else
+        {
+            repeat = false;
+        }
         if (goal.IsType() == "Checklist")
         {
             Console.WriteLine("");
-            Console.Writeline("Is this a Multiple Occassion Activity? (i.e. Going out to the Gym 10 times, etc.) (y/n):")
-            answer = Console.ReadLine();
-            if (answer.ToLower() == "y")
+            Console.WriteLine("Is this a Multiple Occassion Activity? (i.e. Going out to the Gym 10 times, etc.) (y/n):");
+            string answer = Console.ReadLine();
+            char multi = char.ToLower(answer.Trim()[0]);
+            if (multi == 'y')
             {
-                Console.WriteLine("Activity Name: ");
-                string activityName = Console.ReadLine();
-                Console.WriteLine("Activity Points: ");
-                int activityPoints = int.Parse(Console.ReadLine());
                 Console.WriteLine("Number of Occurences before Bonus:");
                 int increments = int.Parse(Console.ReadLine());
                 Console.WriteLine("Bonus Point Amount: ");
                 int bonusPoints = int.Parse(Console.ReadLine());
 
-                activity = new ChecklistActivity(activityName, activityPoints, bonusPoints, DateTime.Now, increments, null);
+                ChecklistActivity activity = new ChecklistActivity(activityName, activityPoints, bonusPoints, DateTime.Now, increments, null);
                 goal.AddActivity(activity);
             }
             else
             {
-                activity = new Activity();
+                Activity activity = new Activity(activityName, activityPoints, DateTime.Now, repeat);
                 goal.AddActivity(activity);
             }
-            Console.WriteLine($"Activity '{activity.GetName()}' added to goal '{goalName}'.");
             SaveGoals();
-            return;
         }
-        Console.Write("Enter name of the new activity: ");
+        else
+        {
+            Activity activity = new Activity(activityName, activityPoints, DateTime.Now, repeat);
+            goal.AddActivity(activity);
+            SaveGoals();
+        }
+    }
+    public void AddActivity(Goal goal)
+    {
+        bool repeat = false;
+        Console.WriteLine("Activity Name: ");
         string activityName = Console.ReadLine();
-        Console.Write("Enter the points of the new activity: ");
-        int points = int.Parse(Console.ReadLine());
-        var newActivity = new Activity(activityName, points, DateTime.Now);
-        goal.AddActivity(newActivity);
-        Console.WriteLine("");
-        Console.WriteLine($"Activity '{activityName}' added to goal '{goalName}'.");
-        SaveGoals();
+        Console.WriteLine("Activity Points: ");
+        int activityPoints = int.Parse(Console.ReadLine());
+        Console.WriteLine("Is this a Repeatable Activity? (y/n): ");
+        string repeatableInput = Console.ReadLine();
+        char repeatableChar = char.ToLower(repeatableInput.Trim()[0]);
+
+        if (repeatableChar == 'y')
+        {
+            repeat = true;
+        }
+        else
+        {
+            repeat = false;
+        }
+        if (goal.IsType() == "Checklist")
+        {
+            Console.WriteLine("");
+            Console.WriteLine("Is this a Multiple Occassion Activity? (i.e. Going out to the Gym 10 times, etc.) (y/n):");
+            string answer = Console.ReadLine();
+            char multi = char.ToLower(answer.Trim()[0]);
+            if (multi == 'y')
+            {
+                Console.WriteLine("Number of Occurences before Bonus:");
+                int increments = int.Parse(Console.ReadLine());
+                Console.WriteLine("Bonus Point Amount: ");
+                int bonusPoints = int.Parse(Console.ReadLine());
+
+                ChecklistActivity activity = new ChecklistActivity(activityName, activityPoints, bonusPoints, DateTime.Now, increments, null);
+                goal.AddActivity(activity);
+            }
+            else
+            {
+                Activity activity = new Activity(activityName, activityPoints, DateTime.Now, repeat);
+                goal.AddActivity(activity);
+            }
+            SaveGoals();
+        }
+        else
+        {
+            Activity activity = new Activity(activityName, activityPoints, DateTime.Now, repeat);
+            goal.AddActivity(activity);
+            SaveGoals();
+        }
     }
     public void LoadGoals()
     {
+        _earnedPoints = 0;
+        _goals = new List<Goal>();
         try
         {
             string[] goalFiles = Directory.GetFiles(_dirPath, "*_goals.txt");
@@ -212,7 +281,9 @@ public class GoalManager
                                 Activity activity = new Activity(activityName, totalPoints, DateTime.Now);
                                 if (isComplete)
                                 {
-                                    activity.MarkComplete();
+                                    goal.AddActivity(activity);
+                                    goal.MarkComplete(activity);
+                                    return;
                                 }
                                 goal.AddActivity(activity);
                             }
@@ -334,7 +405,7 @@ public class GoalManager
             string addActivity = Console.ReadLine();
             if (addActivity.ToLower() == "no")
                 break;
-            goal.AddActivity();
+            AddActivity(goal);
         }
         _goals.Add(goal);
         SaveGoals();

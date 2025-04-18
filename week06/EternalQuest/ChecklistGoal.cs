@@ -12,13 +12,52 @@ public class ChecklistGoal : Goal
             Console.WriteLine($"Activity '{activity.GetName()}' is not in the checklist.");
             return 0;
         }
+
         if (activity.IsActiveComplete())
         {
             Console.WriteLine($"Activity '{activity.GetName()}' is already completed.");
             return 0;
         }
+
+        if (activity is ChecklistActivity checklist)
+        {
+            if (checklist.GetCurrentIteration() == checklist.GetIterations())
+            {
+                Console.WriteLine("");
+                Console.WriteLine($"Congratulations on completing {checklist.GetName()}!");
+                Console.WriteLine("Would you like to increase the number of iterations? (y/n)");
+                string response = Console.ReadLine();
+                if (response?.ToLower() == "y")
+                {
+                    Console.WriteLine("How many should we increase the number by?");
+                    if (int.TryParse(Console.ReadLine(), out int increase))
+                    {
+                        checklist.SetIterations(checklist.GetIterations() + increase);
+                        Console.WriteLine($"Activity '{checklist.GetName()}' iterations increased to {checklist.GetIterations()}.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid number. No changes made.");
+                    }
+                }
+                else
+                {
+                    checklist.MarkComplete();
+                }
+
+                return checklist.GetPoints();
+            }
+            else
+            {
+                checklist.MarkComplete();
+            }
+        }
+        else
+        {
+            _earnedPoints = activity.MarkComplete(); // Fallback for other activity types
+        }
+
         Console.WriteLine($"Marking activity '{activity.GetName()}' as complete in {_name} checklist.");
-        activity.MarkComplete();
         return activity.GetPoints();
     }
     public void ListActivities()
@@ -27,32 +66,6 @@ public class ChecklistGoal : Goal
         foreach (var activity in _storedActivites)
         {
             Console.WriteLine($"- {activity.GetName()}: {(activity.IsActiveComplete() ? "Complete" : "Incomplete")}");
-        }
-    }
-    public int MarkComplete(CheckListActivity activity)
-    {
-        if (activity.GetCurrentIteration() == activity.GetIterations())
-        {
-            Console.WriteLine("");
-            Console.WriteLine($"Congratulations on completeing {activity.GetName()}!");
-            Console.WriteLine("Would you like to increase the number of iterations? (y/n)");
-            string response = Console.ReadLine();
-            if (response?.ToLower() == "y")
-            {
-                Console.WriteLine("How many should we increase the number by? (i.e. if you say 1 and there are 10 left, it will become 11 left)")
-                int increase = int.Parse(Console.ReadLine());
-                activity.SetIterations(activity.GetIterations() + increase);
-                Console.WriteLine($"Activity '{activity.GetName()}' iterations increased to {activity.GetIterations()}.");
-            }
-            else
-            {
-                activity.MarkComplete();
-            }
-            return;
-        }
-        else
-        {
-            activity.MarkComplete();
         }
     }
     public void AddActivity(ChecklistActivity activity)
@@ -64,7 +77,7 @@ public class ChecklistGoal : Goal
             string response = Console.ReadLine();
             if (response?.ToLower() == "y")
             {
-                Console.WriteLine("How many should we increase the number by? (i.e. if you say 1 and there are 10 left, it will become 11 left)")
+                Console.WriteLine("How many should we increase the number by? (i.e. if you say 1 and there are 10 left, it will become 11 left)");
                 int increase = int.Parse(Console.ReadLine());
                 activity.SetIterations(activity.GetIterations() + increase);
                 Console.WriteLine($"Activity '{activity.GetName()}' iterations increased to {activity.GetIterations()}.");
@@ -88,7 +101,11 @@ public class ChecklistGoal : Goal
         Console.WriteLine($"Activities: ");
         foreach (var activity in GetActivities())
         {
-            if (activity.IsActiveComplete())
+            if (activity is ChecklistActivity checklist)
+            {
+                Console.WriteLine($"{checklist.GetCurrentIteration()}/{checklist.GetIterations()} --  {checklist.GetName()} Points: {checklist.GetCurrPoints()}/{checklist.GetCompletePoints()} |");
+            }
+            else if (activity.IsActiveComplete())
             {
                 Console.WriteLine($"[X] -- {activity.GetName()}, Points: {activity.GetPoints()}/{activity.GetTotalPoints()} |");
             }

@@ -47,7 +47,7 @@ public class Activity
     {
         return _earnedPoints;
     }
-    public int GetTotalPoints()
+    public virtual int GetTotalPoints()
     {
         return _totalPoints;
     }
@@ -55,15 +55,16 @@ public class Activity
     {
         Console.WriteLine($"Activity: {_name}, Points: {_earnedPoints}/{_totalPoints}");
     }
-    public void MarkComplete()
+    public virtual int MarkComplete()
     {
         if (_isComplete)
         {
             Console.WriteLine($"Activity '{_name}' is already complete.");
-            return;
+            return 0;
         }
         _isComplete = true;
         _earnedPoints = _totalPoints;
+        return _earnedPoints;
     }
     public bool IsActiveComplete()
     {
